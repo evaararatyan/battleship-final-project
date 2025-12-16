@@ -1,11 +1,15 @@
 BOARD_SIZE = 10
 
-# check: is cell inside the board or not
 def is_inside_board(x, y):
+    """
+    Check if coordinate is inside the board.
+    """
     return 0 <= x < BOARD_SIZE and 0 <= y < BOARD_SIZE
 
-# get all neighboring cells of a given cell (even diagonals)
 def get_neighbors(x, y):
+    """
+    Get all neighbor cells (including diagonals).
+    """
     neighbors = []
     for dx in [-1, 0, 1]:
         for dy in [-1, 0, 1]:
@@ -18,33 +22,56 @@ def get_neighbors(x, y):
     return neighbors
 
 
-# check if ship can be placed at given cells
-def is_valid_ship(ship_cells, occupied_cells):
-    for (x, y) in ship_cells:
-        # if cell is already occupied
-        if (x, y) in occupied_cells:
-            return False
+def is_straight_line(ship):
+    """
+    Check that ship is in one row or one column.
+    """
+    xs = [x for x, _ in ship]
+    ys = [y for _, y in ship]
+    return len(set(xs)) == 1 or len(set(ys)) == 1
 
-        # check neighboring cells
-        for neighbor in get_neighbors(x, y):
-            if neighbor in occupied_cells:
-                return False
+def is_consecutive(ship):
+    """
+    Check that ship cells are next to each other.
+    """
+    ship = sorted(ship)
+    for i in range(len(ship) - 1):
+        x1, y1 = ship[i]
+        x2, y2 = ship[i + 1]
+        if abs(x1 - x2) + abs(y1 - y2) != 1:
+            return False
     return True
 
 
-#creating empty board 10x10
+def is_valid_ship(ship_cells, occupied_cells):
+    """
+    Check that ship does not touch other ships.
+    """
+    for (x, y) in ship_cells:
+        if (x, y) in occupied_cells:
+            return False
+
+        for neighbor in get_neighbors(x, y):
+            if neighbor in occupied_cells:
+                return False
+
+    return True
+
+
 def create_empty_board():
+    """
+    Create empty 10x10 board.
+    """
     board = []
     for _ in range(BOARD_SIZE):
         board.append(["."] * BOARD_SIZE)
     return board
 
 
-#print the board in terminal
 def print_board(board):
+    """
+    Print board to terminal.
+    """
     print("  " + " ".join(str(i) for i in range(BOARD_SIZE)))
     for i, row in enumerate(board):
         print(i, " ".join(row))
-
-
-
