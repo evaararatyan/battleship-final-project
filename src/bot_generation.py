@@ -1,60 +1,58 @@
-import random
 import csv
+import random
 from src import utils
 
+# Размеры кораблей
 SHIP_SIZES = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
-
-def generate_ship(size, occupied):
-    """
-    Generate one valid ship of given size.
-    Cheks that it does not touch other ships.
-    """
-
-    while True:
-        direction = random.choice(['H', 'V'])
-
-        if direction == 'H':
-            x = random.randint(0, utils.BOARD_SIZE - 1)
-            y = random.randint(0, utils.BOARD_SIZE - size)
-            ship = [(x, y + i) for i in range(size)]
-
-        else:
-            x = random.randint(0, utils.BOARD_SIZE - size)
-            y = random.randint(0, utils.BOARD_SIZE - 1)
-            ship = [(x + i, y) for i in range(size)]
-
-        if utils.is_valid_ship(ship, occupied):
-            return ship
 
 def generate_bot_ships():
     """
-    Generate all ships for bot
+    Generate random ship layout for bot and return as list of ships.
+    Each ship = list of (x, y) tuples.
     """
     ships = []
-    occupied = set()
+    occupied = set()  # клетки, которые уже заняты
 
     for size in SHIP_SIZES:
-        ship = generate_ship(size, occupied)
-        ships.append(ship)
+        while True:
+            # случайная ориентация: True = горизонтально, False = вертикально
+            horizontal = random.choice([True, False])
+            if horizontal:
+                x = random.randint(0, utils.BOARD_SIZE - 1)
+                y = random.randint(0, utils.BOARD_SIZE - size)
+                ship = [(x, y + i) for i in range(size)]
+            else:
+                x = random.randint(0, utils.BOARD_SIZE - size)
+                y = random.randint(0, utils.BOARD_SIZE - 1)
+                ship = [(x + i, y) for i in range(size)]
 
-        for cell in ship:
-            occupied.add(cell)
+            if utils.is_valid_ship(ship, occupied):
+                ships.append(ship)
+                for c in ship:
+                    occupied.add(c)
+                break
 
     return ships
 
-def save_bot_ships(ships, filename):
+def save_bot_ships_to_csv(ships, filename="data/bot_ships.csv"):
     """
-    Save generated bot ships to CSV.
+    Save bot ships to CSV file.
+    Each ship is one row: x1,y1,x2,y2,...
     """
     with open(filename, "w", newline="") as file:
         writer = csv.writer(file)
         for ship in ships:
-            writer.writerow(ship)
+            flat = [coord for pair in ship for coord in pair]
+            writer.writerow(flat)
 
 def run_bot_generation():
     """
-    Main function: Generate and save bot ships.
+    Main function to generate bot ships and save to CSV.
     """
     ships = generate_bot_ships()
-    save_bot_ships(ships, "data/bot_ships.csv")
-    print("Bot ships generated and saved.")
+    save_bot_ships_to_csv(ships)
+    print("Bot ships generated and saved successfully!")
+
+# Для тестирования напрямую:
+if __name__ == "__main__":
+    run_bot_generation()
