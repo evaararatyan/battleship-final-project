@@ -12,6 +12,8 @@ def get_player_input():
     print("Bari luys! Welcome to Battleship by me")
     print("Enter ship coordinates.")
     print("Format example for size 3: 0 0 0 1 0 2 (space-separated x y pairs)")
+    print("Here is your board ('.' = empty cell, you will place your ships here):")
+    utils.print_board(utils.create_empty_board())
     print("Good luck ynger ;)")
 
     for size in SHIP_SIZES:
