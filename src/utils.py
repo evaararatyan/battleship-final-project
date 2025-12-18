@@ -2,13 +2,13 @@ BOARD_SIZE = 10
 
 def is_inside_board(x, y):
     """
-    Check if coordinate is inside the board.
+    Check if coordinate is inside the board
     """
     return 0 <= x < BOARD_SIZE and 0 <= y < BOARD_SIZE
 
 def get_neighbors(x, y):
     """
-    Get all neighbor cells (including diagonals).
+    Get all neighbor cells and diagonals)
     """
     neighbors = []
     for dx in [-1, 0, 1]:
@@ -21,10 +21,9 @@ def get_neighbors(x, y):
                 neighbors.append((nx, ny))
     return neighbors
 
-
 def is_straight_line(ship):
     """
-    Check that ship is in one row or one column.
+    Check that ship is in one row or one column
     """
     xs = [x for x, _ in ship]
     ys = [y for _, y in ship]
@@ -32,7 +31,7 @@ def is_straight_line(ship):
 
 def is_consecutive(ship):
     """
-    Check that ship cells are next to each other.
+    Check that ship cells are next to each othr
     """
     ship = sorted(ship)
     for i in range(len(ship) - 1):
@@ -42,35 +41,27 @@ def is_consecutive(ship):
             return False
     return True
 
-
 def is_valid_ship(ship_cells, occupied_cells):
     """
-    Check that ship does not touch other ships.
+    Check that ship doesnt touch other ships and is inside board
     """
     for (x, y) in ship_cells:
         if (x, y) in occupied_cells:
             return False
-
         for neighbor in get_neighbors(x, y):
             if neighbor in occupied_cells:
                 return False
-
     return True
-
 
 def create_empty_board():
     """
-    Create empty 10x10 board.
+    Create empty 10x10 board
     """
-    board = []
-    for _ in range(BOARD_SIZE):
-        board.append(["."] * BOARD_SIZE)
-    return board
-
+    return [["."] * BOARD_SIZE for _ in range(BOARD_SIZE)]
 
 def print_board(board):
     """
-    Print board to terminal.
+    Print board to terminal
     """
     print("  " + " ".join(str(i) for i in range(BOARD_SIZE)))
     for i, row in enumerate(board):

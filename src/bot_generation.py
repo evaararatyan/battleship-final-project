@@ -2,20 +2,14 @@ import csv
 import random
 from src import utils
 
-# Размеры кораблей
 SHIP_SIZES = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
 
 def generate_bot_ships():
-    """
-    Generate random ship layout for bot and return as list of ships.
-    Each ship = list of (x, y) tuples.
-    """
     ships = []
-    occupied = set()  # клетки, которые уже заняты
+    occupied = set()
 
     for size in SHIP_SIZES:
         while True:
-            # случайная ориентация: True = горизонтально, False = вертикально
             horizontal = random.choice([True, False])
             if horizontal:
                 x = random.randint(0, utils.BOARD_SIZE - 1)
@@ -35,10 +29,6 @@ def generate_bot_ships():
     return ships
 
 def save_bot_ships_to_csv(ships, filename="data/bot_ships.csv"):
-    """
-    Save bot ships to CSV file.
-    Each ship is one row: x1,y1,x2,y2,...
-    """
     with open(filename, "w", newline="") as file:
         writer = csv.writer(file)
         for ship in ships:
@@ -46,13 +36,9 @@ def save_bot_ships_to_csv(ships, filename="data/bot_ships.csv"):
             writer.writerow(flat)
 
 def run_bot_generation():
-    """
-    Main function to generate bot ships and save to CSV.
-    """
     ships = generate_bot_ships()
     save_bot_ships_to_csv(ships)
     print("Bot ships generated and saved successfully!")
 
-# Для тестирования напрямую:
 if __name__ == "__main__":
     run_bot_generation()
