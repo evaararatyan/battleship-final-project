@@ -1,0 +1,5 @@
+Requirements:
+
+Python 3.11+
+
+No external libraries are required (all code uses standard Python modules).

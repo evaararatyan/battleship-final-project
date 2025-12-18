@@ -31,35 +31,40 @@ def run_game():
         """
         for ship in ships:
             if shot in ship:
-                ship.remove(shot)  # убираем попадание из корабля
+                ship.remove(shot)
                 return True, ship
         return False, None
 
-    # --- Создание пустых досок ---
-    player_board = create_empty_board()  # доска игрока
-    bot_board = create_empty_board()     # доска бота (для отображения твоих попаданий)
+    # -creation of empty board-
+    player_board = create_empty_board()
+    bot_board = create_empty_board()
 
-    # --- Загрузка кораблей из CSV ---
+    # -importing ships from csv--
     player_ships = load_ships("data/player_ships.csv")
     bot_ships = load_ships("data/bot_ships.csv")
 
-    # --- Списки для выстрелов бота ---
-    bot_shots = []     # все клетки, по которым бот уже стрелял
-    bot_targets = []   # список клеток для умного поиска после попадания
+    # === NEW: place player ships on board ===
+    for ship in player_ships:
+        for x, y in ship:
+            player_board[x][y] = "S"
+
+    # -lists for bots shots-
+    bot_shots = []
+    bot_targets = []
 
     turn = 1
     while player_ships and bot_ships:
         print(f"\n--- Turn {turn} ---")
 
-        # --- Печать доски игрока ---
+        # -player boards print-
         print("Your board (your ships + bot hits):")
         print_board(player_board)
 
-        # --- Печать доски бота (только твои выстрелы) ---
+        # -bots board(w your hits-
         print("Bot board (your hits/misses):")
         print_board(bot_board)
 
-        # --- Ход игрока ---
+        # -players move-
         try:
             x, y = map(int, input("Enter your shot (x y): ").split())
         except:
@@ -70,63 +75,47 @@ def run_game():
             print("Shot out of board! Enter numbers 0-9.")
             continue
 
-        # Проверка попадания по кораблям бота
+        #checks if u hit bots ship
         hit, ship = check_hit((x, y), bot_ships)
         bot_board[x][y] = "X" if hit else "O"
-        
-    
+
         if hit and ship is not None and len(ship) == 0:
-        #   Корабль полностью уничтожен
-            destroyed_cells = [(x, y)]  # здесь лучше передавать весь корабль
+            destroyed_cells = [(x, y)]
             for sx, sy in destroyed_cells:
                 for nx, ny in get_neighbors(sx, sy):
                     if bot_board[nx][ny] == ".":
                         bot_board[nx][ny] = "O"
-            print("You destroyed a ship!")  # <-- сообщение вместо обычного hit
+            print("You destroyed a ship!")
         else:
             print("You hit!" if hit else "You miss!")
 
-
-
-        # --- Ход бота ---
-        # Если бот ранее попал и ищет соседние клетки (умный режим)
+        # -bots move-
         if bot_targets:
             bx, by = bot_targets.pop(0)
         else:
-        # Иначе случайный выстрел
             while True:
                 bx, by = random.randint(0, 9), random.randint(0, 9)
                 if (bx, by) not in bot_shots:
                     break
         bot_shots.append((bx, by))
 
-    # Проверяем попадание по кораблям игрока
+        #check if bot hit your ship
         hit, ship = check_hit((bx, by), player_ships)
         player_board[bx][by] = "X" if hit else "O"
 
-    # Проверяем, полностью ли уничтожен корабль
         if hit and ship is not None and len(ship) == 0:
-        # destroyed_cells — все клетки только что уничтоженного корабля
-        # Здесь желательно, чтобы check_hit возвращал весь корабль до удаления клетки
-            destroyed_cells = [(bx, by)]  # временно, можно улучшить позже
-
-            # Отмечаем все соседние клетки как промах
+            destroyed_cells = [(bx, by)]
             for sx, sy in destroyed_cells:
                 for nx, ny in get_neighbors(sx, sy):
                     if player_board[nx][ny] == ".":
                         player_board[nx][ny] = "O"
-
-            # Сообщение игроку о том, что корабль уничтожен
             print(f"Bot destroyed your ship at {bx},{by}!")
-
-            # Сбрасываем цели бота после уничтожения корабля
             bot_targets = []
         else:
             print(f"Bot shoots: {bx},{by} -> {'hit' if hit else 'miss'}")
 
         turn += 1
 
-    # End of the game
     if not player_ships:
         print("Bot wins! sorry bro")
     else:

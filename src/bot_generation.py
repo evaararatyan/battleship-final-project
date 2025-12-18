@@ -5,6 +5,10 @@ from src import utils
 SHIP_SIZES = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
 
 def generate_bot_ships():
+    '''
+    Generate a list of ships for the bot randomly
+    Each ship is a list of coordinates
+    '''
     ships = []
     occupied = set()
 
@@ -29,6 +33,11 @@ def generate_bot_ships():
     return ships
 
 def save_bot_ships_to_csv(ships, filename="data/bot_ships.csv"):
+    '''
+    Save the generated bot ships to a CSV file
+    Each row in the CSV represents one ship 
+    '''
+
     with open(filename, "w", newline="") as file:
         writer = csv.writer(file)
         for ship in ships:
@@ -36,6 +45,11 @@ def save_bot_ships_to_csv(ships, filename="data/bot_ships.csv"):
             writer.writerow(flat)
 
 def run_bot_generation():
+    '''
+    Generate bot ships and save them to CSV.
+    Print a confirmation message.
+    '''
+
     ships = generate_bot_ships()
     save_bot_ships_to_csv(ships)
     print("Bot ships generated and saved successfully!")
