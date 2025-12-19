@@ -9,15 +9,15 @@ The game is played in the terminal and allows a player to play against a bot.
 
 ├─ main.py
 ├─ data/
-│ ├─ player_ships.csv
-│ ├─ bot_ships.csv
-│ └─ game_state.csv
+│  ├─ player_ships.csv
+│  ├─ bot_ships.csv
+│  └─ game_state.csv
 ├─ src/
-│ ├─ ship_input.py # Player ship input
-│ ├─ bot_generation.py # Bot ship generation
-│ ├─ gameplay.py # Game loop and logic
-│ └─ utils.py # Helper functions
-├─ outputs/ # Any logs or results (optional)
+│  ├─ ship_input.py      # Player ship input
+│  ├─ bot_generation.py  # Bot ship generation
+│  ├─ gameplay.py        # Game loop and logic
+│  └─ utils.py           # Helper functions
+├─ outputs/              # Any logs or results (optional)
 ├─ requirements.txt
 └─ README.md
 
