@@ -1,92 +1,107 @@
-# Battleship Final Project:<3
+# Battleship — Terminal-Based Strategy Game
 
-This is a simplified version of the classic Battleship game implemented in Python.  
-The game is played in the terminal and allows a player to play against a bot.
+A Python implementation of the classic Battleship strategy game played via the command line interface (CLI). The project features interactive human-vs-bot gameplay, custom ship placement validation, a targeted bot decision algorithm, and game state persistence via CSV data logging.
+
+---
+
+## Technical Overview
+
+- **Language:** Python 3.x
+- **User Interface:** Command Line Interface (CLI)
+- **Data Persistence:** CSV file storage (`player_ships.csv`, `bot_ships.csv`, `game_state.csv`)
+- **Key Algorithms:** Custom grid coordinate validation, non-adjacent placement logic, stateful bot targeting AI
 
 ---
 
 ## Project Structure
 
-├─ main.py
-├─ data/
-│  ├─ player_ships.csv
-│  ├─ bot_ships.csv
-│  └─ game_state.csv
-├─ src/
-│  ├─ ship_input.py      # Player ship input
-│  ├─ bot_generation.py  # Bot ship generation
-│  ├─ gameplay.py        # Game loop and logic
-│  └─ utils.py           # Helper functions
-├─ outputs/              # Any logs or results (optional)
-├─ requirements.txt
-└─ README.md
+```text
+battleship/
+├── data/
+│   ├── player_ships.csv      # Player fleet layout and coordinates
+│   ├── bot_ships.csv         # Bot fleet layout and coordinates
+│   └── game_state.csv        # Logged game actions, hits, and misses
+├── src/
+│   ├── ship_input.py         # Player ship placement and input parsing
+│   ├── bot_generation.py     # Procedural bot fleet placement
+│   ├── gameplay.py           # Core game loop, turn mechanics, and win conditions
+│   └── utils.py              # Grid rendering and validation helper functions
+├── outputs/                  # Execution logs and output records (optional)
+├── main.py                   # Main application entry point
+├── requirements.txt          # Python dependencies
+└── README.md                 # Project documentation
 
---------------
+```
+## System Architecture & Game Design
+Fleet Composition & Placement Rules
+The game is played on a 10×10 grid. Each player commands a fleet consisting of 10 ships:
+
+1x Battleship (Size 4)
+
+2x Cruisers (Size 3)
+
+3x Destroyers (Size 2)
+
+4x Submarines (Size 1)
+
+Ships are represented as lists of coordinate tuples (x, y). Placement validation ensures that no two ships overlap or touch each other, including diagonal adjacencies.
 
 
-## How to Play
+## Artificial Intelligence Strategy
+The opponent bot executes an adaptive shooting algorithm:
 
-1. Run the game:
+1. Random Search: Fires randomly across unvisited grid coordinates.
 
-```bash
+2. Target Tracking: Upon recording a hit, switches to adjacent cell investigation.
+
+3. Axis Locking: Locks onto a vertical or horizontal axis after two consecutive hits to systematically sink the targeted ship.
+
+4. Auto-Clearing: Automatically marks all perimeter cells surrounding a destroyed ship as misses.
+
+
+## Setup and Execution
+1. Installation
+Clone the repository and navigate to the project directory:
+
+```
+git clone <repository-url>
+cd battleship
+```
+Install dependencies (if required):
+```
+pip install -r requirements.txt
+```
+
+2. Running the Game
+Launch the game loop from the root directory:
+
+```
 python3 main.py
 ```
 
 
-2. Player Ship Input
+## Gameplay Guide
+1. Fleet Setup
+Input coordinates for each ship sequentially in space-separated x y pairs.
 
-You will be asked to input your ships one by one:
+Example for a Size 3 Cruiser:
+```
+0 0 0 1 0 2
+```
 
-Format example for size 3: 0 0 0 1 0 2 (space-separated x y pairs)
+### 2. Game Loop & Interface
+During each turn, two 10×10 grids are rendered:
 
-Ship sizes: 4, 3, 3, 2, 2, 2, 1, 1, 1, 1
+Player Board: Displays your fleet, opponent shots, and hits.
 
-Ships cannot touch each other, even diagonally.
+Bot Board: Displays your target history (hits and misses).
 
+Board legend:
 
-3. Bot Ship Generation
-The bot automatically generates valid ships following the same rules.
+. — Unexplored / Empty cell
 
+X — Successful hit
 
-4. Game Loop
+O — Missed shot
 
-After both ship layouts are ready, the game starts.
-
-You will see two boards:
-
-Your board — shows your ships and bot hits.
-
-Bot board — shows your hits and misses on the bot.
-
-Enter your shots in x y format.
-
-The game continues until all ships of one side are destroyed.
-
-
-5. Game State CSV
-
-The file data/game_state.csv keeps track of moves, hits, and misses.
-
-
----------------
-
-
-LETS TALK ABT DESIGN PART:
-
-Ships are represented as lists of coordinates (x, y).
-
-Boards are 10x10, using . for empty, X for hits, O for misses.
-
-Bot AI:
-
-Random shooting initially.
-
-Smart follow-up after a hit.
-
-Axis locking after second consecutive hit.
-
-Surrounding cells of destroyed ships are automatically marked as miss.
-
-
------------------
-Enjoy :3
+Input target coordinates during your turn using the x y format until one fleet is entirely eliminated.
