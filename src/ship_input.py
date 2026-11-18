@@ -14,11 +14,11 @@ def get_player_input():
     print("Format example for size 3: 0 0 0 1 0 2 (space-separated x y pairs)")
     print("Here is your board ('.' = empty cell, you will place your ships here):")
     utils.print_board(utils.create_empty_board())
-    print("Good luck ynger ;)")
+    print("Good luck;)")
 
     for size in SHIP_SIZES:
         while True:
-            raw = input(f"Enter ship of size {size} xndrumem: ")
+            raw = input(f"Enter ship of size {size}: ")
             parts = raw.split()
 
             if len(parts) != size * 2:
